@@ -1,0 +1,58 @@
+---
+title: "Use dplyr"
+author: "Duu Renn"
+date: "August 31, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, tidy=T)
+```
+
+# Data Management
+Sometimes you don't want to look at an entire dataset. In vanilla R, there are a number of ways to look at specific observations but it ofter requires a lot of typing and isn't super-intuitive.  
+
+```{r}
+# Load data 
+load(url("http://www.jakebowers.org/Data/ho05.rda"))
+# Using indicies, we can find the first person's ethnicity 
+ho05$Ethnic11[1]
+# But what if we want to see all the Asian - Pakistani people in the dataset and their biological sex?
+which(ho05$Ethnic11=="Asian - Pakistani")
+ho05[which(ho05$Ethnic11=="Asian - Pakistani"), "Rsex"]
+# Alternatively
+ho05[which(ho05$Ethnic11=="Asian - Pakistani"), 2]
+
+# You might find dplyr a little easier
+require(dplyr)
+ho05 %>% 
+  filter(Ethnic11 == "Asian - Pakistani") %>% 
+  select(Rsex)
+```
+
+
+# Dplyr examples
+Try this [dplyr tutorial](https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html) -- probably worth two or three dailyR assignments if you change the dataset to one from the class website.  
+```{r}
+# Say I want to quickly find the average of hlphrs by location, thinking that that's really where the variation is occurring. 
+# We'll be changing the unit of observation here from "individuals" to geographical units. So to match the new unit, we'll want to make sure we talk about changes at the group/region level and not individuals.  
+
+# Here are our regions
+table(ho05$GOR)
+
+# Let's make a new dataset and generate a new variable, 'hlphrs_region' which is the average across people within a region.
+ho05_location <- ho05 %>% 
+  group_by(GOR) %>% 
+  mutate(hlphrs_region = mean(hlphrs, na.rm=T)) %>% 
+  ungroup() %>% 
+  distinct(GOR, hlphrs_region) %>% # Why did I do this?
+  arrange(hlphrs_region)
+
+# Which region had the most hlphrs
+print(ho05_location)
+# Hey, is this less skewed
+hist(ho05_location$hlphrs_region)
+```
+
+
+

@@ -1,0 +1,53 @@
+---
+title: "buggy-code"
+author: "Duu Renn"
+date: "August 31, 2016"
+output: 
+  html_document: 
+    number_sections: yes
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error=T)
+```
+
+__Buggy Code__  
+Most of your time in R will probably be used trouble shooting a few trickly lines of code. The following code chunks don't work. Practice fixing them. Put in comments. Post.  
+
+If you do manage to fix the code, submit a pull request and I'll update the file. 
+
+# <describe the issue>
+<write a summary of what it should do, why it doesn't, and how you fixed it.  
+
+```{r}
+load(url("http://www.jakebowers.org/Data/meddat.rda"))
+
+colnames(meddat)
+
+table(Group, useNA = "ifany")
+
+mean(Pop2003)
+```
+
+```{r, include=F}
+remove(meddat)
+```
+
+# <describe the issue>
+<write a summary of what it should do, why it doesn't, and how you fixed it.  
+
+```{r}
+load(url("http://www.jakebowers.org/Data/countries.rda"))
+
+nonDemocraticCountries <- filter(smalldat, Cheibub4Type ?? "Democracy")
+democraticCountries <- filter(smalldat, Cheibub4Type %in% c("Democracy"))
+
+print(nonDemocraticCountries)
+print(democraticCountries)
+```
+
+
+```{r, include=F}
+remove(smalldat)
+```

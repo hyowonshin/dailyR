@@ -1,0 +1,42 @@
+---
+title: "save your file"
+author: "Duu Renn"
+date: "August 31, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Did you make changes to a dataset that you want to save? 
+Say we want to shrink the gss so we don't have to load the whole thing each time. 
+
+```{r}
+# Load the GSS
+load(url("http://www.jakebowers.org/Data/gss7210.rda"))
+# How much space does it take up in memory? (Someone convert this to MBs or GBs)
+object.size(gss7210)
+dim(gss7210)
+
+# Let's just take a few of these  variables
+require(dplyr)
+gss7210small <- gss7210 %>% 
+  select(peoplegn, watergen, letin1, amshamed)
+
+# New file will go in your working directory. Check this with getwd()
+save(gss7210small, file="gss7210small.rda")
+
+# Load and check size
+load("gss7210small.rda")
+object.size(gss7210small)
+dim(gss7210small)
+```
+
+```{r, eval = F}
+# Save as different format. Works only for one object, allows name reassignment which is sometimes nice. 
+saveRDS(gss7210small, "gss7210small.rds")
+# The same load command will not work. Will require assignment and different command.
+gss7210_alt <- readRDS("gss7210-alt.rds")
+```
+
