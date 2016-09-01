@@ -1,0 +1,39 @@
+# Buggy Code 1
+load(url("http://www.jakebowers.org/Data/meddat.rda"))
+colnames(meddat)
+# This function works and it shows the names of the variables (columns) in the meddat data frame
+
+table(Group, useNA = "ifany")
+# This function is suppossed to show the values for the "Group" variable, which has two possible outcomes (C-control group and T-treatment group). There are two errors with the code: (1) the name of the data frame was not included (meddat), and (2) the variable is named "nhGroup", not "Group". Here's the fixed code:
+table(meddat$nhGroup, useNA = "ifany")
+
+mean(Pop2003)
+# This function should give us the mean of the Population for the year 2003. However, the function does not work because the dataset was not included. Add the dataset (meddat) before the variable with a dollar symbol ($) and it runs.
+mean(meddat$Pop2003)
+
+remove(meddat)
+
+# Buggy Code 2
+load(url("http://www.jakebowers.org/Data/countries.rda"))
+
+nonDemocraticCountries <- filter(smalldat, Cheibub4Type ?? "Democracy")
+# This function aims to create a new data frame with the non-democratic countries listed in the Democracy-Dictatorship Index by attempting to exclude the "democracies" in the index. The first thing we need to fix in the code is the placements of the original data frame and the variable, and also the symbols (%>% and ==). The right order should be:
+nonDemocraticCountries <- smalldat %>% filter(Cheibub4Type=="Democracy")
+# But this code still wouldn't work. Why? Because you are suppossed to indicate the possibilities you want to include in your new data frame, not the ones you want to exclude. First of all, "Democracy" is not even a category in the D-D Idex. If we look at the Cheibub4Type variable using the summary function, we see that the set of possibilities consist of "Dictatorship", "Parliamentary democracy", "Mixed executive" and "Presidential democracy".
+summary(smalldat$Cheibub4Type)
+
+# Out of these four possibilities, "Dictatrship" is the only to describe a non-democratic form of government. Thus, in order to create the non-democratic countries data frame, the appropriate code would be:
+nonDemocraticCountries <- smalldat %>% filter(Cheibub4Type=="Dictatorship")
+
+democraticCountries <- filter(smalldat, Cheibub4Type %in% c("Democracy"))
+# This code aims to create a data frame with democratic countries, but when the spreadsheet is created, the rows are empty. The 19 variables are there, but the observations are not. How do we fix this? As we learned with the previous code, "Democracy" is not a possibility, "Parliamentary democracy", "Mixed executive" and "Presidential democracy" are. Since we now have three possibilities to include in our data frame, we can't use the same command as before (Cheibub4Type==""). We need to use the combine values into a vector list function: c(). 
+help("c")
+# Then we also need to fix a bit the order and symbols (as in the previous case) for the filter function to work. The right code is:
+democraticCountries <- smalldat %>% filter(Cheibub4Type %in% c("Parliamentary democracy", "Mixed executive", "Presidential democracy"))
+# Now we can see the 82 observatios for the 19 variables.
+
+# Print the data frames to view the objects!
+print(nonDemocraticCountries)
+print(democraticCountries)
+
+remove(smalldat)
